@@ -7,13 +7,19 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.0.5"
+    "element-plus": "^1.0.2-beta.65",
+    "normalize.css": "^8.0.1",
+    "vue": "^3.0.5",
+    "vue-router": "^4.0.10"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.3.0",
     "@vue/compiler-sfc": "^3.0.5",
+    "sass": "^1.37.0",
+    "sass-loader": "^12.1.0",
     "typescript": "^4.3.2",
     "vite": "^2.4.4",
+    "vite-plugin-style-import": "^1.0.1",
     "vue-tsc": "^0.2.2"
   }
 }
