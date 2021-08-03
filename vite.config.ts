@@ -28,4 +28,16 @@ export default defineConfig({
       '@': '/src',
     },
   },
+  server: {
+    host: '0.0.0.0',
+    port: 3002,
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:7001',
+        changeOrigin: true,
+        ws: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
 })

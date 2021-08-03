@@ -1,28 +1,21 @@
 import { reactive } from 'vue'
-import type { RegisterType } from '@/types/user'
 import {
   CAPTCHA_REGEX,
   EMAIL_REGEX,
   PASSWORD_REGEX,
+  PHONE_REGEX,
   USERNAME_REGEX,
 } from '@/constants/validate'
 
 const usernamePass = (_rule: any, value: string, callback: any): void => {
   if (!value) {
     callback(new Error('请填写用户名'))
-  } else if (value.length < 4) {
-    callback(new Error('用户名至少4位'))
-  } else if (!USERNAME_REGEX.test(value)) {
-    callback(new Error('用户名只能是字母或数字'))
-  } else {
-    callback()
-  }
-}
-const emailPass = (_rule: any, value: string, callback: any): void => {
-  if (!value) {
-    callback(new Error('请填写邮箱'))
-  } else if (!EMAIL_REGEX.test(value)) {
-    callback(new Error('邮箱格式不正确'))
+  } else if (
+    !USERNAME_REGEX.test(value) &&
+    !EMAIL_REGEX.test(value) &&
+    !PHONE_REGEX.test(value)
+  ) {
+    callback(new Error('账号格式不正确'))
   } else {
     callback()
   }
@@ -49,27 +42,13 @@ const captchaPass = (_rule: any, value: string, callback: any): void => {
     callback()
   }
 }
-const checkedPass = (_rule: any, value: string, callback: any): void => {
-  if (!value) {
-    callback(new Error('请阅读并同意用户协议'))
-  } else {
-    callback()
-  }
-}
 
-const useFormRules = (type: RegisterType) => {
-  const formRules = reactive<any>({
-    // email: [{ validator: emailPass, trigger: 'blur' }],
+const useFormRules = () => {
+  const formRules = reactive({
+    username: [{ validator: usernamePass, trigger: 'blur' }],
     password: [{ validator: passwordPass, trigger: 'blur' }],
     captcha: [{ validator: captchaPass, trigger: 'blur' }],
-    checked: [{ validator: checkedPass, trigger: 'change' }],
   })
-
-  if (type === 'username') {
-    formRules.username = [{ validator: usernamePass, trigger: 'blur' }]
-  } else if (type === 'email') {
-    formRules.email = [{ validator: emailPass, trigger: 'blur' }]
-  }
 
   return formRules
 }

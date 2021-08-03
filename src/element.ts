@@ -10,6 +10,13 @@ import {
   ElCheckbox,
   ElRow,
   ElCol,
+  ElContainer,
+  ElHeader,
+  ElAside,
+  ElMain,
+  ElMenu,
+  ElSubmenu,
+  ElMenuItem,
 } from 'element-plus'
 
 const components = [
@@ -22,6 +29,13 @@ const components = [
   ElCheckbox,
   ElRow,
   ElCol,
+  ElContainer,
+  ElHeader,
+  ElAside,
+  ElMain,
+  ElMenu,
+  ElSubmenu,
+  ElMenuItem,
 ]
 const plugins = [ElMessage]
 const options = { size: 'medium' }

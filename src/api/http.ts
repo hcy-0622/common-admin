@@ -1,10 +1,10 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 
-const devBaseURL = 'http://127.0.0.1:7001'
+// const devBaseURL = 'http://127.0.0.1:7001'
 
 const http = axios.create({
-  baseURL: devBaseURL,
+  baseURL: '/api',
   timeout: 15000,
   withCredentials: true,
 })
