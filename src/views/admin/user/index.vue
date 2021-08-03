@@ -40,7 +40,7 @@
           </el-form>
         </el-col>
         <el-col :span="6">
-          <el-button type="primary" @click="createUser">新增用户</el-button>
+          <el-button type="primary" @click="addUser">新增用户</el-button>
           <el-upload
             class="excel-uploader"
             :action="importAction"
@@ -73,15 +73,15 @@
             ></el-switch>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="操作">
+        <el-table-column label="操作">
           <template #default="{ row }">
-            <el-button type="primary" icon="el-icon-edit" @click="editUserClick(row)"></el-button>
-            <el-button type="danger" icon="el-icon-delete" @click="delUser(row.id)"></el-button>
-            <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
+            <el-button type="primary" icon="el-icon-edit" @click="editUser(row)"></el-button>
+            <el-button type="danger" icon="el-icon-delete" @click="deleteUser(row.id)"></el-button>
+            <!-- <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
               <el-button type="warning" icon="el-icon-setting" @click="distributeRoleClick(row)"></el-button>
-            </el-tooltip>
+            </el-tooltip>-->
           </template>
-        </el-table-column>-->
+        </el-table-column>
       </el-table>
     </el-card>
     <el-pagination
@@ -92,12 +92,7 @@
       layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
 
-    <!-- <user-form
-      :visible.sync="formVisible"
-      :user.sync="selectedUser"
-      @added="formAdded"
-      @edited="formEdited"
-    ></user-form>-->
+    <user-form ref="userForm" :user="selectedUser" @succeed="formSucceed"></user-form>
 
     <!-- <el-dialog v-if="selectedUser" title="分配角色" :visible.sync="distributeRoleVisible" width="30%">
       <el-form ref="form" :model="selectedUser" label-width="80px">
@@ -123,17 +118,21 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, watch } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus';
 import XLSX from 'xlsx'
 import { saveAs } from 'file-saver'
 
 import userApi from '@/api/user';
+import UserForm from './UserForm.vue'
 import type { GetUsersParams, User } from '@/types/user';
 import type { PaginationData } from '@/types/common';
 
+
 const usersData = reactive<PaginationData<User>>({ list: [], total: 0 })
 const queryParams = reactive<GetUsersParams>({ page: 1, pageSize: 15 })
+const selectedUser = ref<User>()
+const userForm = ref()
 const importAction = userApi.getImportUsers()
 const exportHref = userApi.getExportUsers()
 
@@ -198,14 +197,23 @@ const exportQueryUsers = () => {
   )
 }
 
-const createUser = () => { }
-const importUsersSuccess = () => {
-  ElMessage.success('用户导入成功')
+const addUser = () => {
+  selectedUser.value = undefined
+  userForm.value.show()
+}
+const editUser = (row: User) => {
+  selectedUser.value = row
+  userForm.value.show()
+}
+const formSucceed = () => {
   getUsersData()
 }
-const importUsersError = () => {
-  ElMessage.success('用户导入失败')
+const deleteUser = (id: string) => {
+  userApi.deleteUser(id).then(() => {
+    getUsersData()
+  })
 }
+
 const beforeUsersUpload = (file: File) => {
   const isExcel = file.type === 'application/vnd.ms-excel'
   const isLt2M = file.size / 1024 / 1024 < 2
@@ -216,6 +224,13 @@ const beforeUsersUpload = (file: File) => {
     ElMessage.error('导入文件大小不能超过 2MB!')
   }
   return isExcel && isLt2M
+}
+const importUsersSuccess = () => {
+  ElMessage.success('用户导入成功')
+  getUsersData()
+}
+const importUsersError = () => {
+  ElMessage.success('用户导入失败')
 }
 
 const resetActivePath = () => {

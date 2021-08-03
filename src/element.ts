@@ -28,6 +28,7 @@ import {
   ElSwitch,
   ElTooltip,
   ElUpload,
+  ElDialog,
 } from 'element-plus'
 
 const components = [
@@ -58,16 +59,17 @@ const components = [
   ElSwitch,
   ElTooltip,
   ElUpload,
+  ElDialog,
 ]
 const plugins = [ElMessage]
 const options = { size: 'medium' }
 
 const useElement = (app: App<Element>) => {
   app.config.globalProperties.$ELEMENT = options
-  components.forEach((component) => {
+  components.forEach(component => {
     app.component(component.name, component)
   })
-  plugins.forEach((plugin) => {
+  plugins.forEach(plugin => {
     app.use(plugin)
   })
 }

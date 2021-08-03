@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, defineComponent } from 'vue'
 import 'element-plus/packages/theme-chalk/src/base.scss'
 
 import App from './App.vue'

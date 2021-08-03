@@ -1,13 +1,14 @@
 <template>
-  <el-dialog :title="(user ? '编辑' : '新增') + '用户'" :visible="visible" width="30%" @close="resetForm">
-    <el-form ref="form" :model="formData" :rules="formRules" label-width="0">
-      <el-form-item prop style="text-align: center">
+  <el-dialog v-model="visible" :title="title" destroy-on-close>
+    <el-form ref="form" :model="formData" :rules="formRules">
+      <el-form-item style="text-align: center">
         <el-upload
           class="avatar-uploader"
-          action="http://127.0.0.1:7001/api/v1/upload_avatar"
+          :action="uploadAvatarAction"
           :show-file-list="false"
-          :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
+          :on-success="avatarUploadSuccess"
+          :on-error="avatarUploadError"
         >
           <img v-if="formData.avatarURL" :src="formData.avatarURL" class="avatar" />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -31,16 +32,87 @@
         ></el-input>
       </el-form-item>
     </el-form>
-
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="resetForm">取 消</el-button>
-      <el-button type="primary" @click="submitUser">确 定</el-button>
-    </span>
+    <template #footer>
+      <el-button @click="close">取 消</el-button>
+      <el-button type="primary" @click="submit">确 定</el-button>
+    </template>
   </el-dialog>
 </template>
 
 <script setup lang="ts">
+import { computed, ref, watchEffect } from 'vue'
+import { ElMessage } from 'element-plus'
+import userApi from '@/api/user'
+import type { User } from "@/types/user"
+import useFormRules from './useFormRules'
 
+interface Props {
+  user?: User
+}
+
+const props = defineProps<Props>()
+const emit = defineEmits(['succeed', 'failed'])
+const visible = ref(false)
+const title = computed(() => (props.user ? '编辑' : '新增') + '用户')
+const form = ref()
+const formData = ref<Partial<User & { password: string }>>({})
+const formRules = useFormRules(props.user)
+const uploadAvatarAction = userApi.getUploadAvatar()
+
+watchEffect(() => {
+  if (props.user) {
+    formData.value = { ...props.user }
+  } else {
+    formData.value = {}
+  }
+})
+
+const beforeAvatarUpload = (file: File) => {
+  const isJPG = file.type === 'image/jpeg'
+  const isLt2M = file.size / 1024 / 1024 < 2
+
+  if (!isJPG) {
+    ElMessage.error('上传头像图片只能是 JPG 格式!')
+  }
+  if (!isLt2M) {
+    ElMessage.error('上传头像图片大小不能超过 2MB!')
+  }
+  return isJPG && isLt2M
+}
+const avatarUploadSuccess = (res: any) => {
+  formData.value.avatarURL = res.data
+}
+const avatarUploadError = () => {
+  ElMessage.success('用户导入失败')
+}
+
+const show = () => {
+  visible.value = true
+}
+const close = () => {
+  visible.value = false
+}
+const submit = () => {
+  if (!form.value) return
+  form.value.validate(async (flag: boolean) => {
+    if (!flag) {
+      return
+    }
+    try {
+      if (props.user) {
+        await userApi.updateUser(props.user.id, formData.value as User)
+      } else {
+        await userApi.createUser(formData.value as User)
+      }
+      close()
+      emit('succeed')
+    } catch (e) {
+      emit('failed')
+    }
+  })
+}
+
+defineExpose({ show, close })
 </script>
 
 <style scoped lang="scss">
