@@ -1,3 +1,6 @@
+import { PaginationParams } from './common'
+import { Role } from './role'
+
 type AuthType = 'username' | 'email' | 'phone'
 export type RegisterType = AuthType
 export type LoginType = AuthType
@@ -18,3 +21,22 @@ export interface RegisterFormData extends RegisterData {
 }
 
 export interface LoginData extends AuthData {}
+
+export interface User {
+  id: number
+  username: string | null
+  email: string | null
+  phone: string | null
+  avatarURL: string | null
+  local: boolean
+  github: boolean
+  userState: boolean
+  roles: Role[]
+}
+
+export interface GetUsersParams extends PaginationParams {
+  role?: string
+  origin?: string
+  type?: string
+  keyword?: string
+}

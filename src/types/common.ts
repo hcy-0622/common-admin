@@ -5,3 +5,8 @@ export interface ApiResult<T = any> {
 }
 
 export type PromiseApiResult<T = any> = Promise<ApiResult<T>>
+export type PaginationParams = { page: number; pageSize: number }
+export type PaginationData<T = Record<string, any>> = {
+  list: T[]
+  total: number
+}

@@ -2,7 +2,7 @@
   <el-container>
     <el-header>
       <div class="header-left" @click="toggleCollapse">
-        <img src="@/assets/logo.png" alt="">
+        <img src="@/assets/logo.png" alt />
       </div>
       <div class="header-right">
         <img src="../../assets/avatar.jpg" alt />
@@ -83,7 +83,7 @@ const logout = () => {
   .el-header {
     display: flex;
     justify-content: space-between;
-    background: rgb(26, 30, 31);
+    background: #7c3aed;
     .header-left {
       width: 200px;
       height: 60px;

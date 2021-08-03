@@ -20,7 +20,7 @@
           <el-input v-model="formData.captcha" prefix-icon="el-icon-lock" placeholder="请输入验证码"></el-input>
         </el-col>
         <el-col :span="6">
-          <img ref="captchaImg" src="http://127.0.0.1:7001/image_code" alt @click="updateCaptcha" />
+          <img ref="captchaImg" :src="captchaSrc" alt @click="updateCaptcha" />
         </el-col>
       </el-row>
     </el-form-item>
@@ -66,7 +66,6 @@ interface Props {
 const props = defineProps<Props>()
 const router = useRouter()
 const form = ref()
-const captchaImg = ref<HTMLImageElement>()
 const formData = reactive<RegisterFormData>({
   password: '',
   captcha: '',
@@ -74,6 +73,9 @@ const formData = reactive<RegisterFormData>({
   checked: false,
 })
 const formRules = useFormRules(props.type)
+const captchaImg = ref<HTMLImageElement>()
+const captchaSrc = userApi.getImageCode()
+
 const register = () => {
   if (!form.value) {
     return
@@ -95,7 +97,7 @@ const sendEmailCode = () => {
 }
 const updateCaptcha = () => {
   if (captchaImg.value) {
-    captchaImg.value.src = `http://127.0.0.1:7001/image_code?r=${Math.random()}`
+    captchaImg.value.src = `${captchaSrc}?r=${Math.random()}`
   }
 }
 </script>

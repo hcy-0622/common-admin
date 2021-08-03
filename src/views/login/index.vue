@@ -24,12 +24,7 @@
               <el-input v-model="formData.captcha" prefix-icon="el-icon-lock" placeholder="请输入验证码"></el-input>
             </el-col>
             <el-col :span="6">
-              <img
-                ref="captchaImg"
-                src="http://127.0.0.1:7001/image_code"
-                alt
-                @click="updateCaptcha"
-              />
+              <img ref="captchaImg" :src="captchaSrc" alt @click="updateCaptcha" />
             </el-col>
           </el-row>
         </el-form-item>
@@ -39,11 +34,9 @@
       </el-form>
       <ul class="auth-box">
         <li>
-          <a href="http://127.0.0.1:7001/github">
-            <svg class="icon" aria-hidden="true">
-              <use xlink:href="#icon-qq" />
-            </svg>
-          </a>
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-qq" />
+          </svg>
         </li>
         <li>
           <svg class="icon" aria-hidden="true">
@@ -56,7 +49,7 @@
           </svg>
         </li>
         <li>
-          <a href="http://127.0.0.1:7001/passport/github">
+          <a :href="githubHref">
             <svg class="icon" aria-hidden="true">
               <use xlink:href="#icon-github" />
             </svg>
@@ -85,6 +78,8 @@ const formData = reactive<LoginData>({
 })
 const formRules = useFormRules()
 const captchaImg = ref()
+const captchaSrc = userApi.getImageCode()
+const githubHref = userApi.getGithubPassport()
 
 const handleFormData = () => {
   const username = formData.username as string
@@ -101,7 +96,7 @@ const handleFormData = () => {
 
 const updateCaptcha = () => {
   if (captchaImg.value) {
-    captchaImg.value.src = `http://127.0.0.1:7001/image_code?r=${Math.random()}`
+    captchaImg.value.src = `${captchaSrc}?r=${Math.random()}`
   }
 }
 

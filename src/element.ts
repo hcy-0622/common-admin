@@ -17,6 +17,17 @@ import {
   ElMenu,
   ElSubmenu,
   ElMenuItem,
+  ElBreadcrumb,
+  ElBreadcrumbItem,
+  ElTable,
+  ElTableColumn,
+  ElPagination,
+  ElSelect,
+  ElOption,
+  ElCard,
+  ElSwitch,
+  ElTooltip,
+  ElUpload,
 } from 'element-plus'
 
 const components = [
@@ -36,6 +47,17 @@ const components = [
   ElMenu,
   ElSubmenu,
   ElMenuItem,
+  ElBreadcrumb,
+  ElBreadcrumbItem,
+  ElTable,
+  ElTableColumn,
+  ElPagination,
+  ElSelect,
+  ElOption,
+  ElCard,
+  ElSwitch,
+  ElTooltip,
+  ElUpload,
 ]
 const plugins = [ElMessage]
 const options = { size: 'medium' }

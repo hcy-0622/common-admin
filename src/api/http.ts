@@ -1,8 +1,6 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 
-// const devBaseURL = 'http://127.0.0.1:7001'
-
 const http = axios.create({
   baseURL: '/api',
   timeout: 15000,
@@ -10,7 +8,7 @@ const http = axios.create({
 })
 
 // 添加请求拦截器
-axios.interceptors.request.use(
+http.interceptors.request.use(
   (config) => {
     // 在发送请求之前做些什么
     // config.headers.Authorization = sessionStorage.getItem('token')
@@ -23,7 +21,7 @@ axios.interceptors.request.use(
 )
 
 // 添加响应拦截器
-axios.interceptors.response.use(
+http.interceptors.response.use(
   (response) => {
     if (response.status === 200) return response.data
     return Promise.reject(response)

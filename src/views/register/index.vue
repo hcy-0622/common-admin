@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import RegisterForm from './register-form.vue'
+import RegisterForm from './RegisterForm.vue'
 const tabClick = () => { }
 </script>
 
