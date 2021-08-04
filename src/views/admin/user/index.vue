@@ -72,9 +72,9 @@
       <template #default="{ row }">
         <el-button type="primary" icon="el-icon-edit" @click="editUser(row)"></el-button>
         <el-button type="danger" icon="el-icon-delete" @click="deleteUser(row.id)"></el-button>
-        <!-- <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" @click="distributeRoleClick(row)"></el-button>
-        </el-tooltip>-->
+        <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
+          <el-button type="warning" icon="el-icon-setting" @click="distributeRole(row)"></el-button>
+        </el-tooltip>
       </template>
     </el-table-column>
   </el-table>
@@ -88,27 +88,7 @@
   ></el-pagination>
 
   <user-form ref="userForm" :user="selectedUser" @succeed="formSucceed"></user-form>
-
-  <!-- <el-dialog v-if="selectedUser" title="分配角色" :visible.sync="distributeRoleVisible" width="30%">
-      <el-form ref="form" :model="selectedUser" label-width="80px">
-        <el-form-item label="当前用户">
-          <el-input v-model="selectedUser.username" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="当前角色">
-          <el-input v-model="roleName" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="新的角色">
-          <el-select v-model="selectedRoleId" placeholder="请选择">
-            <el-option v-for="r of roles" :key="r.id" :value="r.id" :label="r.roleName"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="distributeRoleVisible = false">取消</el-button>
-        <el-button type="danger" @click="removeRole">删除角色</el-button>
-        <el-button type="primary" @click="distributeRole">新增角色</el-button>
-      </span>
-  </el-dialog>-->
+  <distribute-role-form ref="distributeForm" :user="selectedUser" @succeed="formSucceed"></distribute-role-form>
 </template>
 
 <script setup lang="ts">
@@ -116,6 +96,7 @@ import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 
 import UserForm from './UserForm.vue'
+import DistributeRoleForm from './DistributeRoleForm.vue'
 import useUsers from './useUsers';
 import useExportUsers from './useExportUsers';
 import userApi from '@/api/user';
@@ -125,6 +106,7 @@ const { users, query, getUsers } = useUsers()
 const exportUsers = useExportUsers()
 const selectedUser = ref<User>()
 const userForm = ref()
+const distributeForm = ref()
 const importAction = userApi.getImportUsers()
 const exportHref = userApi.getExportUsers()
 
@@ -135,10 +117,6 @@ const getRoleNames = (row: User) => row.roles.map(r => r.roleName).join(' | ')
 const queryUsers = () => {
   getUsers({ ...query, page: 1 })
 }
-// 导出用户数据
-const exportQueryUsers = () => {
-  exportUsers(users.list)
-}
 
 // 用户操作
 const changeUserState = (row: User) => {
@@ -148,6 +126,10 @@ const changeUserState = (row: User) => {
     row.userState = !row.userState
     ElMessage.error('用户状态更新失败')
   })
+}
+const distributeRole = (row: User) => {
+  selectedUser.value = row
+  distributeForm.value.show()
 }
 const addUser = () => {
   selectedUser.value = undefined
@@ -166,7 +148,7 @@ const deleteUser = (id: string) => {
   })
 }
 
-// 文件上传逻辑
+// 导入用户
 const beforeUsersUpload = (file: File) => {
   const isExcel = file.type === 'application/vnd.ms-excel'
   const isLt2M = file.size / 1024 / 1024 < 2
@@ -184,6 +166,10 @@ const importUsersSuccess = () => {
 }
 const importUsersError = () => {
   ElMessage.success('用户导入失败')
+}
+// 导出用户
+const exportQueryUsers = () => {
+  exportUsers(users.list)
 }
 </script>
 

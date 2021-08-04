@@ -7,6 +7,11 @@ export interface Role {
   roleState: boolean
 }
 
-export interface GetRoleParams extends PaginationParams {
+export interface GetRoleParams extends Partial<PaginationParams> {
   keyword?: string
+}
+
+export interface UserRole {
+  userId: number
+  roleId: number
 }

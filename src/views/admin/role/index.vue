@@ -56,9 +56,8 @@ import { ElMessage } from 'element-plus';
 
 import RoleForm from './RoleForm.vue'
 import useRoles from "./useRoles";
-import type { Role } from "@/types/role"
 import roleApi from '@/api/role';
-
+import type { Role } from "@/types/role"
 
 const { roles, query, getRoles } = useRoles()
 const selectedRole = ref<Role>()
