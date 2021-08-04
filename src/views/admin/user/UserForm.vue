@@ -40,28 +40,29 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue'
+import { computed, ref, toRefs, watchEffect } from 'vue'
 import { ElMessage } from 'element-plus'
 import userApi from '@/api/user'
 import type { User } from "@/types/user"
 import useFormRules from './useFormRules'
 
 interface Props {
-  user?: User
+  user: User
 }
 
 const props = defineProps<Props>()
+const { user } = toRefs(props)
 const emit = defineEmits(['succeed', 'failed'])
 const visible = ref(false)
-const title = computed(() => (props.user ? '编辑' : '新增') + '用户')
+const title = computed(() => (user.value ? '编辑' : '新增') + '用户')
 const form = ref()
 const formData = ref<Partial<User & { password: string }>>({})
-const formRules = useFormRules(props.user)
+const formRules = useFormRules(user)
 const uploadAvatarAction = userApi.getUploadAvatar()
 
 watchEffect(() => {
-  if (props.user) {
-    formData.value = { ...props.user }
+  if (user.value) {
+    formData.value = { ...user.value }
   } else {
     formData.value = {}
   }
@@ -99,8 +100,8 @@ const submit = () => {
       return
     }
     try {
-      if (props.user) {
-        await userApi.updateUser(props.user.id, formData.value as User)
+      if (user.value) {
+        await userApi.updateUser(user.value.id, formData.value as User)
       } else {
         await userApi.createUser(formData.value as User)
       }

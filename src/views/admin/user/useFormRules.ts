@@ -1,5 +1,10 @@
-import { computed, ref, watchEffect } from 'vue'
-import { EMAIL_REGEX, PASSWORD_REGEX, PHONE_REGEX, USERNAME_REGEX } from '@/constants/validate'
+import { computed, Ref } from 'vue'
+import {
+  EMAIL_REGEX,
+  PASSWORD_REGEX,
+  PHONE_REGEX,
+  USERNAME_REGEX,
+} from '@/constants/validate'
 import { User } from '@/types/user'
 
 const usernamePass = (_rule: any, value: string, callback: any): void => {
@@ -31,11 +36,12 @@ const phonePass = (rule: any, value: string, callback: any) => {
   }
 }
 
-const useFormRules = (user?: User) => {
-  const passwordPass = computed(() => {
-    return (_rule: any, value: string, callback: any): void => {
+const useFormRules = (user: Ref<User>) => {
+  const formRules = computed(() => {
+    const passwordPass = (_rule: any, value: string, callback: any): void => {
       const regex = PASSWORD_REGEX
-      if (user) {
+      if (user.value) {
+        // 编辑时可以不输入密码
         if (value) {
           if (value.length < 6) {
             callback(new Error('密码至少6位'))
@@ -48,6 +54,7 @@ const useFormRules = (user?: User) => {
           callback()
         }
       } else {
+        // 新增必须传入密码
         if (!value) {
           callback(new Error('请填写密码'))
         } else if (value.length < 6) {
@@ -59,18 +66,14 @@ const useFormRules = (user?: User) => {
         }
       }
     }
-  })
 
-  const formRules = ref<any>({
-    username: [{ validator: usernamePass, trigger: 'blur' }],
-    email: [{ validator: emailPass, trigger: 'blur' }],
-    phone: [{ validator: phonePass, trigger: 'blur' }],
-    password: [{ validator: passwordPass, trigger: 'blur' }],
+    return {
+      username: [{ validator: usernamePass, trigger: 'blur' }],
+      email: [{ validator: emailPass, trigger: 'blur' }],
+      phone: [{ validator: phonePass, trigger: 'blur' }],
+      password: [{ validator: passwordPass, trigger: 'blur' }],
+    }
   })
-
-  // watchEffect(() => {
-  //   formRules.value.password = [{ validator: passwordPass.value, trigger: 'blur' }]
-  // })
 
   return formRules
 }

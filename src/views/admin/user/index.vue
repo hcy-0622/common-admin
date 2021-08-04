@@ -10,28 +10,28 @@
     <el-card class="box-card">
       <el-row>
         <el-col :span="18">
-          <el-form inline :model="queryParams">
+          <el-form inline :model="query">
             <el-form-item label>
-              <el-select v-model="queryParams.role" placeholder="-所有角色-" clearable>
+              <el-select v-model="query.role" placeholder="-所有角色-" clearable>
                 <el-option label="管理员" value="manager"></el-option>
                 <el-option label="普通用户" value="normal"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label>
-              <el-select v-model="queryParams.origin" placeholder="-所有来源-" clearable>
+              <el-select v-model="query.origin" placeholder="-所有来源-" clearable>
                 <el-option label="本地注册" value="local"></el-option>
                 <el-option label="Github登录" value="github"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label>
-              <el-select v-model="queryParams.type" placeholder="-所有用户-" clearable>
+              <el-select v-model="query.type" placeholder="-所有用户-" clearable>
                 <el-option label="用户名" value="username"></el-option>
                 <el-option label="邮箱" value="email"></el-option>
                 <el-option label="手机" value="phone"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label>
-              <el-input v-model="queryParams.keyword" placeholder="关键字" clearable></el-input>
+              <el-input v-model="query.keyword" placeholder="关键字" clearable></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="queryUsers">查询</el-button>
@@ -57,7 +57,7 @@
           </a>
         </el-col>
       </el-row>
-      <el-table :data="usersData.list" border stripe style="width: 100%">
+      <el-table :data="users.list" border stripe style="width: 100%">
         <el-table-column type="index"></el-table-column>
         <el-table-column prop="username" label="用户名"></el-table-column>
         <el-table-column prop="email" label="邮箱"></el-table-column>
@@ -85,9 +85,9 @@
       </el-table>
     </el-card>
     <el-pagination
-      :total="usersData.total"
-      v-model:currentPage="queryParams.page"
-      v-model:pageSize="queryParams.pageSize"
+      :total="users.total"
+      v-model:currentPage="query.page"
+      v-model:pageSize="query.pageSize"
       :page-sizes="[5, 10, 15, 20]"
       layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
@@ -118,32 +118,35 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch } from 'vue'
-import { ElMessage } from 'element-plus';
-import XLSX from 'xlsx'
-import { saveAs } from 'file-saver'
+import { ref } from 'vue'
+import { ElMessage } from 'element-plus'
 
-import userApi from '@/api/user';
 import UserForm from './UserForm.vue'
-import type { GetUsersParams, User } from '@/types/user';
-import type { PaginationData } from '@/types/common';
+import useUsers from './useUsers';
+import useExportUsers from './useExportUsers';
+import userApi from '@/api/user';
+import type { User } from '@/types/user';
 
-
-const usersData = reactive<PaginationData<User>>({ list: [], total: 0 })
-const queryParams = reactive<GetUsersParams>({ page: 1, pageSize: 15 })
+const { users, query, getUsers } = useUsers()
+const exportUsers = useExportUsers()
 const selectedUser = ref<User>()
 const userForm = ref()
 const importAction = userApi.getImportUsers()
 const exportHref = userApi.getExportUsers()
 
-const getUsersData = (params: GetUsersParams = queryParams) => {
-  userApi.getUsers(params).then(result => {
-    const { list, total } = result.data
-    usersData.list = list
-    usersData.total = total
-  })
-}
+// 获取角色名称
 const getRoleNames = (row: User) => row.roles.map(r => r.roleName).join(' | ')
+
+// 查询用户数据
+const queryUsers = () => {
+  getUsers({ ...query, page: 1 })
+}
+// 导出用户数据
+const exportQueryUsers = () => {
+  exportUsers(users.list)
+}
+
+// 用户操作
 const changeUserState = (row: User) => {
   userApi.updateUser(row.id, row).then(() => {
     ElMessage.success('用户状态更新成功')
@@ -152,51 +155,6 @@ const changeUserState = (row: User) => {
     ElMessage.error('用户状态更新失败')
   })
 }
-
-// 页面加载完毕获取
-onMounted(() => {
-  getUsersData()
-})
-// page、pageSize变化获取
-watch([() => queryParams.page, () => queryParams.pageSize], ([curPage, curPageSize], [prePage, prePageSize]) => {
-  getUsersData({ ...queryParams, page: curPage, pageSize: curPageSize })
-})
-// 查询参数获取
-const queryUsers = () => {
-  getUsersData({ ...queryParams, page: 1 })
-}
-
-const exportQueryUsers = () => {
-  const firstUser = usersData.list.length ? usersData.list[0] : null
-  const data: string[][] = []
-  if (firstUser) {
-    const columnTitles = Object.keys(firstUser)
-    data.push(columnTitles)
-    usersData.list.forEach((u) => {
-      const rows: string[] = []
-      columnTitles.forEach((t) => {
-        const item = u[t as keyof typeof u]
-        rows.push(item ? JSON.stringify(item) : '')
-      })
-      data.push(rows)
-    })
-  }
-  const sheet = XLSX.utils.aoa_to_sheet(data)
-  const workbook = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(workbook, sheet, '用户信息')
-  // XLSX.writeFile(workbook, '用户信息.xlsx')
-  const wopts: XLSX.WritingOptions = {
-    bookType: 'xlsx',
-    bookSST: false,
-    type: 'array',
-  }
-  const wbout = XLSX.write(workbook, wopts)
-  saveAs(
-    new Blob([wbout], { type: 'application/octet-stream' }),
-    '用户信息.xlsx'
-  )
-}
-
 const addUser = () => {
   selectedUser.value = undefined
   userForm.value.show()
@@ -206,14 +164,15 @@ const editUser = (row: User) => {
   userForm.value.show()
 }
 const formSucceed = () => {
-  getUsersData()
+  getUsers()
 }
 const deleteUser = (id: string) => {
   userApi.deleteUser(id).then(() => {
-    getUsersData()
+    getUsers()
   })
 }
 
+// 文件上传逻辑
 const beforeUsersUpload = (file: File) => {
   const isExcel = file.type === 'application/vnd.ms-excel'
   const isLt2M = file.size / 1024 / 1024 < 2
@@ -227,7 +186,7 @@ const beforeUsersUpload = (file: File) => {
 }
 const importUsersSuccess = () => {
   ElMessage.success('用户导入成功')
-  getUsersData()
+  getUsers()
 }
 const importUsersError = () => {
   ElMessage.success('用户导入失败')
