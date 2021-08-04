@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="login-box">
       <h1>欢迎登录</h1>
-      <el-form ref="form" :model="formData" :rules="formRules" label-width="0">
+      <el-form ref="form" :model="formData" :rules="formRules">
         <el-form-item label prop="username">
           <el-input
             v-model="formData.username"
@@ -60,7 +60,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { useRouter } from 'vue-router'
 
 import type { LoginData } from "@/types/user";
@@ -99,6 +99,8 @@ const updateCaptcha = () => {
     captchaImg.value.src = `${captchaSrc}?r=${Math.random()}`
   }
 }
+
+onMounted(updateCaptcha)
 
 const login = () => {
   if (!form.value) {

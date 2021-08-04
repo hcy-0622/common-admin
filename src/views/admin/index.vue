@@ -39,6 +39,13 @@
         </el-menu>
       </el-aside>
       <el-main>
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item>
+            <a href="/admin" @click="resetActivePath">首页</a>
+          </el-breadcrumb-item>
+          <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+          <el-breadcrumb-item>用户列表</el-breadcrumb-item>
+        </el-breadcrumb>
         <router-view></router-view>
       </el-main>
     </el-container>
@@ -73,6 +80,9 @@ const logout = () => {
   router.push('/login')
 }
 
+const resetActivePath = () => {
+  sessionStorage.removeItem('active_path')
+}
 </script>
 
 <style scoped lang="scss">
@@ -80,6 +90,7 @@ const logout = () => {
   width: 100vw;
   height: 100vh;
   background: #ccc;
+  overflow: hidden;
   .el-header {
     display: flex;
     justify-content: space-between;
@@ -110,5 +121,8 @@ const logout = () => {
   .el-aside {
     background: #fff;
   }
+}
+.el-breadcrumb {
+  padding-bottom: 20px;
 }
 </style>

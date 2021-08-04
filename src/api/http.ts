@@ -29,7 +29,9 @@ http.interceptors.response.use(
   (error) => {
     // 对响应错误做点什么
     if (error.response && error.response.data) {
-      ElMessage.error(error.response.data.msg)
+      let msg = error.response.data.msg
+      if (typeof msg !== 'string') msg = JSON.stringify(msg)
+      ElMessage.error(msg)
     }
     return Promise.reject(error)
   }
