@@ -1,10 +1,5 @@
 import { computed, Ref } from 'vue'
-import {
-  EMAIL_REGEX,
-  PASSWORD_REGEX,
-  PHONE_REGEX,
-  USERNAME_REGEX,
-} from '@/constants/validate'
+import { EMAIL_REGEX, PASSWORD_REGEX, PHONE_REGEX, USERNAME_REGEX } from '@/constants/validate'
 import { User } from '@/types/user'
 
 const usernamePass = (_rule: any, value: string, callback: any): void => {
@@ -36,7 +31,7 @@ const phonePass = (rule: any, value: string, callback: any) => {
   }
 }
 
-const useFormRules = (user: Ref<User>) => {
+const useFormRules = (user: Ref<User | undefined>) => {
   const formRules = computed(() => {
     const passwordPass = (_rule: any, value: string, callback: any): void => {
       const regex = PASSWORD_REGEX

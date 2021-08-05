@@ -1,14 +1,14 @@
 <template>
   <!--头部搜索区域-->
-  <el-form :model="query" class="form-inline">
-    <el-form-item style="flex: auto;">
+  <el-form :model="query" class="flex">
+    <el-form-item>
       <el-input v-model="query.keyword" placeholder="关键字" clearable>
         <template #prefix>
           <i class="el-input__icon el-icon-search"></i>
         </template>
       </el-input>
     </el-form-item>
-    <el-form-item style="padding: 0 20px;">
+    <el-form-item class="px-4">
       <el-button type="primary" @click="queryRoles">查询</el-button>
     </el-form-item>
     <el-form-item>
@@ -16,7 +16,7 @@
     </el-form-item>
   </el-form>
   <!--中间表格区域-->
-  <el-table :data="roles.list" style="width: 100%" :border="true" :stripe="true">
+  <el-table :data="roles.list" :border="true" :stripe="true">
     <el-table-column type="index"></el-table-column>
     <el-table-column prop="roleName" label="角色名称"></el-table-column>
     <el-table-column prop="roleDesc" label="角色备注"></el-table-column>
@@ -39,12 +39,12 @@
     </el-table-column>
   </el-table>
   <el-pagination
-    style="padding-top: 20px;"
-    :total="roles.total"
     v-model:currentPage="query.page"
     v-model:pageSize="query.pageSize"
+    :total="roles.total"
     :page-sizes="[5, 10, 15, 20]"
     layout="total, sizes, prev, pager, next, jumper"
+    class="pt-4"
   ></el-pagination>
 
   <role-form ref="roleForm" :role="selectedRole" @succeed="formSucceed"></role-form>
@@ -52,12 +52,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus'
 
 import RoleForm from './RoleForm.vue'
-import useRoles from "./useRoles";
-import roleApi from '@/api/role';
-import type { Role } from "@/types/role"
+import useRoles from './useRoles'
+import roleApi from '@/api/role'
+import type { Role } from '@/types/role'
 
 const { roles, query, getRoles } = useRoles()
 const selectedRole = ref<Role>()
@@ -66,12 +66,15 @@ const queryRoles = () => {
   getRoles({ ...query, page: 1 })
 }
 const changeRoleState = (row: Role) => {
-  roleApi.updateRole(row.id, row).then(() => {
-    ElMessage.success('角色状态更新成功')
-  }).catch((e) => {
-    row.roleState = !row.roleState
-    ElMessage.error('角色状态更新失败')
-  })
+  roleApi
+    .updateRole(row.id, row)
+    .then(() => {
+      ElMessage.success('角色状态更新成功')
+    })
+    .catch(() => {
+      row.roleState = !row.roleState
+      ElMessage.error('角色状态更新失败')
+    })
 }
 const addRole = () => {
   selectedRole.value = undefined
@@ -86,12 +89,7 @@ const deleteRole = (id: number) => {
     getRoles()
   })
 }
-const formSucceed = () => { getRoles() }
-</script>
-
-<style scoped lang="scss">
-.form-inline {
-  display: flex;
-  justify-content: center;
+const formSucceed = () => {
+  getRoles()
 }
-</style>
+</script>

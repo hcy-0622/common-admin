@@ -1,11 +1,11 @@
 <template>
   <el-dialog v-model="visible" :title="title" destroy-on-close>
-    <el-form ref="form" :model="formData" :rules="formRules">
-      <el-form-item label prop="roleName">
-        <el-input v-model="formData.roleName" prefix-icon="el-icon-user" placeholder="角色名称"></el-input>
+    <el-form ref="form" :model="formData" :rules="formRules" label-width="80px">
+      <el-form-item label="角色名称" prop="roleName">
+        <el-input v-model="formData.roleName" prefix-icon="el-icon-user" placeholder="请输入"></el-input>
       </el-form-item>
-      <el-form-item label prop="roleDesc">
-        <el-input v-model="formData.roleDesc" prefix-icon="el-icon-info" placeholder="角色描述"></el-input>
+      <el-form-item label="角色描述" prop="roleDesc">
+        <el-input v-model="formData.roleDesc" prefix-icon="el-icon-info" placeholder="请输入"></el-input>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -17,8 +17,8 @@
 
 <script setup lang="ts">
 import { computed, ref, toRefs, watch } from 'vue'
-import type { Role } from '@/types/role';
-import roleApi from '@/api/role';
+import roleApi from '@/api/role'
+import type { Role } from '@/types/role'
 
 interface Props {
   role: Role

@@ -1,8 +1,8 @@
 <template>
   <div class="register-container">
     <div class="register-box">
-      <h1>欢迎注册</h1>
-      <el-tabs tab-position="left" @tab-click="tabClick">
+      <h2 class="register-title">欢迎注册</h2>
+      <el-tabs tab-position="left">
         <el-tab-pane label="普通注册">
           <register-form type="username"></register-form>
         </el-tab-pane>
@@ -17,35 +17,19 @@
 
 <script setup lang="ts">
 import RegisterForm from './RegisterForm.vue'
-const tabClick = () => { }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .register-container {
-  width: 100vw;
-  height: 100vh;
-  background: url("../../assets/bg.jpg") no-repeat;
-  background-size: cover;
-
-  .register-box {
-    width: 600px;
-    height: 420px;
-    background: #fff;
-    border-radius: 10px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    h1 {
-      text-align: center;
-    }
-    a {
-      text-decoration: none;
-    }
-    .el-form {
-      padding-right: 20px;
-      box-sizing: border-box;
-    }
-  }
+  @apply w-screen h-screen bg-cover bg-no-repeat;
+  background: url("../../assets/bg.jpg");
+}
+.register-box {
+  @apply absolute top-1/2 left-1/2  rounded-lg bg-white p-8;
+  width: 640px;
+  transform: translate(-50%, -50%);
+}
+.register-title {
+  @apply text-center text-2xl font-bold mb-4;
 }
 </style>

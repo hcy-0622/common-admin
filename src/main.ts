@@ -1,13 +1,14 @@
 import { createApp } from 'vue'
-import 'element-plus/packages/theme-chalk/src/base.scss'
+import 'virtual:windi.css'
+import ElementPlus from 'element-plus'
+import 'element-plus/lib/theme-chalk/index.css'
 
 import App from './App.vue'
 import router from './router'
-import useElement from './element'
-import './styles/index.scss'
+import './styles/index.css'
 import './assets/iconfont/iconfont'
 
 const app = createApp(App)
 app.use(router)
-useElement(app)
+app.use(ElementPlus, { size: 'medium' })
 app.mount('#app')

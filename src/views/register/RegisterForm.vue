@@ -8,8 +8,8 @@
     </el-form-item>
     <el-form-item prop="password">
       <el-input
-        type="password"
         v-model="formData.password"
+        type="password"
         prefix-icon="el-icon-message"
         placeholder="请输入密码"
       ></el-input>
@@ -35,7 +35,7 @@
       </el-row>
     </el-form-item>
     <el-form-item>
-      <el-button style="width: 100%" type="primary" @click="register">注册</el-button>
+      <el-button class="w-full" type="primary" @click="register">注册</el-button>
     </el-form-item>
     <el-form-item prop="checked">
       <el-checkbox v-model="formData.checked">
@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 
@@ -86,9 +86,7 @@ const register = () => {
       router.push('/login')
     })
   })
-
 }
-
 
 const sendEmailCode = () => {
   userApi.sendEmailCode(formData.email as string).then(() => {
@@ -101,6 +99,3 @@ const updateCaptcha = () => {
   }
 }
 </script>
-
-<style scoped>
-</style>

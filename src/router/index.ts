@@ -44,6 +44,10 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    path: '/',
+    redirect: '/admin',
+  },
 ]
 
 const router = createRouter({

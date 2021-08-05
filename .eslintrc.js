@@ -1,6 +1,7 @@
 module.exports = {
   root: true,
   env: {
+    browser: true,
     node: true,
   },
   parser: 'vue-eslint-parser',
@@ -15,5 +16,13 @@ module.exports = {
     'plugin:vue/vue3-recommended',
     'plugin:prettier/recommended',
   ],
-  rules: {},
+  globals: {
+    defineProps: 'readonly',
+    defineEmits: 'readonly',
+    defineExpose: 'readonly',
+  },
+  rules: {
+    '@typescript-eslint/explicit-module-boundary-types': 0, // 自动推断返回值类型
+    '@typescript-eslint/no-explicit-any': 0, // 允许any
+  },
 }

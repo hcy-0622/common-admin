@@ -1,7 +1,7 @@
 <template>
   <el-dialog v-model="visible" :title="title" destroy-on-close>
-    <el-form ref="form" :model="formData" :rules="formRules">
-      <el-form-item style="text-align: center">
+    <el-form ref="form" :model="formData" :rules="formRules" label-width="80px">
+      <el-form-item class="text-center">
         <el-upload
           class="avatar-uploader"
           :action="uploadAvatarAction"
@@ -14,21 +14,21 @@
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
-      <el-form-item prop="username">
-        <el-input v-model="formData.username" prefix-icon="el-icon-user" placeholder="用户名"></el-input>
+      <el-form-item label="用户名" prop="username">
+        <el-input v-model="formData.username" prefix-icon="el-icon-user" placeholder="请输入"></el-input>
       </el-form-item>
-      <el-form-item prop="email">
-        <el-input v-model="formData.email" prefix-icon="el-icon-message" placeholder="邮箱"></el-input>
+      <el-form-item label="邮箱" prop="email">
+        <el-input v-model="formData.email" prefix-icon="el-icon-message" placeholder="请输入"></el-input>
       </el-form-item>
-      <el-form-item prop="phone">
-        <el-input v-model="formData.phone" prefix-icon="el-icon-phone-outline" placeholder="手机号"></el-input>
+      <el-form-item label="手机号" prop="phone">
+        <el-input v-model="formData.phone" prefix-icon="el-icon-phone-outline" placeholder="请输入"></el-input>
       </el-form-item>
-      <el-form-item prop="password">
+      <el-form-item label="密码" prop="password">
         <el-input
           v-model="formData.password"
           type="password"
           prefix-icon="el-icon-lock"
-          placeholder="密码"
+          placeholder="请输入"
         ></el-input>
       </el-form-item>
     </el-form>
@@ -40,19 +40,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, toRefs, watchEffect } from 'vue'
+import { computed, ref, toRef, watchEffect } from 'vue'
 import { ElMessage } from 'element-plus'
 import userApi from '@/api/user'
-import type { User } from "@/types/user"
 import useFormRules from './useFormRules'
+import type { User } from '@/types/user'
 
 interface Props {
-  user: User
+  user?: User
 }
 
 const props = defineProps<Props>()
-const { user } = toRefs(props)
 const emit = defineEmits(['succeed', 'failed'])
+const user = toRef(props, 'user')
 const visible = ref(false)
 const title = computed(() => (user.value ? '编辑' : '新增') + '用户')
 const form = ref()
@@ -116,7 +116,7 @@ const submit = () => {
 defineExpose({ show, close })
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .avatar-uploader {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;

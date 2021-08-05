@@ -22,29 +22,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, toRefs, onMounted, computed } from 'vue'
+import { ref, watch, toRef, computed, onMounted } from 'vue'
 import type { User } from '@/types/user'
 import type { Role } from '@/types/role'
 import roleApi from '@/api/role'
 import { ElMessage } from 'element-plus'
 
 interface Props {
-  user: User
+  user?: User
 }
 
 const props = defineProps<Props>()
 const emit = defineEmits(['succeed', 'failed'])
-const { user } = toRefs(props)
+const user = toRef(props, 'user')
 const visible = ref(false)
 const roles = ref<Role[]>([])
 const form = ref()
 const formData = ref<Partial<User & { roleId: number }>>({})
 const formRules = {
-  roleId: [
-    { required: true, message: '请选择角色', trigger: 'change' },
-  ],
+  roleId: [{ required: true, message: '请选择角色', trigger: 'change' }],
 }
-const roleNames = computed(() => formData.value.roles ? formData.value.roles.map(r => r.roleName).join(' | ') : '')
+const roleNames = computed(() => (formData.value.roles ? formData.value.roles.map((r) => r.roleName).join(' | ') : ''))
 
 watch(user, () => {
   if (user.value) {
@@ -54,7 +52,7 @@ watch(user, () => {
   }
 })
 onMounted(() => {
-  roleApi.getRoles({}).then(result => {
+  roleApi.getRoles({}).then((result) => {
     roles.value = result.data
     close()
     emit('succeed')
@@ -62,32 +60,32 @@ onMounted(() => {
 })
 const distributeRole = () => {
   form.value.validate((flag: boolean) => {
-    if (!flag) {
-      return
-    }
-    roleApi.createUserRole({
-      userId: user.value.id,
-      roleId: formData.value.roleId as number
-    }).then(() => {
-      ElMessage.success('角色分配成功')
-      close()
-      emit('succeed')
-    })
+    if (!flag || !user.value) return
+    roleApi
+      .createUserRole({
+        userId: user.value.id,
+        roleId: formData.value.roleId as number,
+      })
+      .then(() => {
+        ElMessage.success('角色分配成功')
+        close()
+        emit('succeed')
+      })
   })
 }
 const removeRole = () => {
   form.value.validate((flag: boolean) => {
-    if (!flag) {
-      return
-    }
-    roleApi.deleteUserRole(user.value.id, {
-      userId: user.value.id,
-      roleId: formData.value.roleId as number
-    }).then(() => {
-      ElMessage.success('角色移除成功')
-      close()
-      emit('succeed')
-    })
+    if (!flag || !user.value) return
+    roleApi
+      .deleteUserRole(user.value.id, {
+        userId: user.value.id,
+        roleId: formData.value.roleId as number,
+      })
+      .then(() => {
+        ElMessage.success('角色移除成功')
+        close()
+        emit('succeed')
+      })
   })
 }
 const show = () => {

@@ -1,24 +1,24 @@
 <template>
   <div class="login-container">
     <div class="login-box">
-      <h1>欢迎登录</h1>
+      <h2 class="login-title">欢迎登录</h2>
       <el-form ref="form" :model="formData" :rules="formRules">
-        <el-form-item label prop="username">
+        <el-form-item prop="username">
           <el-input
             v-model="formData.username"
             prefix-icon="el-icon-user"
             placeholder="用户名 / 邮箱 / 手机号"
           ></el-input>
         </el-form-item>
-        <el-form-item label prop="password">
+        <el-form-item prop="password">
           <el-input
-            type="password"
             v-model="formData.password"
+            type="password"
             prefix-icon="el-icon-lock"
             placeholder="请输入密码"
           ></el-input>
         </el-form-item>
-        <el-form-item label prop="captcha">
+        <el-form-item prop="captcha">
           <el-row>
             <el-col :span="18">
               <el-input v-model="formData.captcha" prefix-icon="el-icon-lock" placeholder="请输入验证码"></el-input>
@@ -29,30 +29,22 @@
           </el-row>
         </el-form-item>
         <el-form-item>
-          <el-button style="width: 100%" type="primary" @click="login">登录</el-button>
+          <el-button class="w-full" type="primary" @click="login">登录</el-button>
         </el-form-item>
       </el-form>
-      <ul class="auth-box">
+      <ul class="flex justify-around">
         <li>
-          <svg class="icon" aria-hidden="true">
-            <use xlink:href="#icon-qq" />
-          </svg>
+          <icon icon="qq" class="text-2xl cursor-pointer"></icon>
         </li>
         <li>
-          <svg class="icon" aria-hidden="true">
-            <use xlink:href="#icon-weixin" />
-          </svg>
+          <icon icon="weixin" class="text-2xl cursor-pointer"></icon>
         </li>
         <li>
-          <svg class="icon" aria-hidden="true">
-            <use xlink:href="#icon-weibo" />
-          </svg>
+          <icon icon="weibo" class="text-2xl cursor-pointer"></icon>
         </li>
         <li>
           <a :href="githubHref">
-            <svg class="icon" aria-hidden="true">
-              <use xlink:href="#icon-github" />
-            </svg>
+            <icon icon="github" class="text-2xl"></icon>
           </a>
         </li>
       </ul>
@@ -60,13 +52,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import type { LoginData } from "@/types/user";
-import { EMAIL_REGEX, PHONE_REGEX } from "@/constants/validate";
-import useFormRules from "./useFormRules";
-import userApi from "@/api/user";
+import Icon from '@/components/Icon.vue'
+import { EMAIL_REGEX, PHONE_REGEX } from '@/constants/validate'
+import useFormRules from './useFormRules'
+import userApi from '@/api/user'
+import type { LoginData } from '@/types/user'
 
 const router = useRouter()
 const form = ref()
@@ -109,47 +102,25 @@ const login = () => {
   form.value.validate((flag: boolean) => {
     if (!flag) return
     handleFormData()
-    userApi.login(formData)
-      .then(() => {
-        // sessionStorage.setItem('token', result.data.token)
-        router.push('/admin')
-      })
+    userApi.login(formData).then(() => {
+      // sessionStorage.setItem('token', result.data.token)
+      router.push('/admin')
+    })
   })
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .login-container {
-  width: 100vw;
-  height: 100vh;
-  background: url("../../assets/bg.jpg") no-repeat;
-  background-size: cover;
-  .login-box {
-    width: 600px;
-    height: 420px;
-    background: #fff;
-    border-radius: 10px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    h1 {
-      text-align: center;
-    }
-    a {
-      text-decoration: none;
-    }
-    .el-form {
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .auth-box {
-      list-style: none;
-      padding: 0;
-      display: flex;
-      justify-content: space-around;
-      font-size: 30px;
-    }
-  }
+  @apply w-screen h-screen bg-cover bg-no-repeat;
+  background: url("../../assets/bg.jpg");
+}
+.login-box {
+  @apply absolute top-1/2 left-1/2 rounded-lg bg-white p-8;
+  width: 480px;
+  transform: translate(-50%, -50%);
+}
+.login-title {
+  @apply text-center text-2xl font-bold mb-4;
 }
 </style>

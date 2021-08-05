@@ -37,7 +37,7 @@
     <el-col :span="6">
       <el-button type="primary" @click="addUser">新增用户</el-button>
       <el-upload
-        class="excel-uploader"
+        class="inline-block mx-4"
         :action="importAction"
         accept=".xls"
         :show-file-list="false"
@@ -52,7 +52,7 @@
       </a>
     </el-col>
   </el-row>
-  <el-table :data="users.list" border stripe style="width: 100%">
+  <el-table :data="users.list" border stripe>
     <el-table-column type="index"></el-table-column>
     <el-table-column prop="username" label="用户名"></el-table-column>
     <el-table-column prop="email" label="邮箱"></el-table-column>
@@ -79,15 +79,15 @@
     </el-table-column>
   </el-table>
   <el-pagination
-    style="padding-top: 20px;"
-    :total="users.total"
     v-model:currentPage="query.page"
     v-model:pageSize="query.pageSize"
+    :total="users.total"
     :page-sizes="[5, 10, 15, 20]"
     layout="total, sizes, prev, pager, next, jumper"
+    class="pt-4"
   ></el-pagination>
 
-  <user-form ref="userForm" :user="selectedUser" @succeed="formSucceed"></user-form>
+  <user-form ref="form" :user="selectedUser" @succeed="formSucceed"></user-form>
   <distribute-role-form ref="distributeForm" :user="selectedUser" @succeed="formSucceed"></distribute-role-form>
 </template>
 
@@ -97,21 +97,20 @@ import { ElMessage } from 'element-plus'
 
 import UserForm from './UserForm.vue'
 import DistributeRoleForm from './DistributeRoleForm.vue'
-import useUsers from './useUsers';
-import useExportUsers from './useExportUsers';
-import userApi from '@/api/user';
-import type { User } from '@/types/user';
+import useUsers from './useUsers'
+import userApi from '@/api/user'
+import { exportData } from '@/utils/excel'
+import type { User } from '@/types/user'
 
 const { users, query, getUsers } = useUsers()
-const exportUsers = useExportUsers()
 const selectedUser = ref<User>()
-const userForm = ref()
+const form = ref()
 const distributeForm = ref()
 const importAction = userApi.getImportUsers()
 const exportHref = userApi.getExportUsers()
 
 // 获取角色名称
-const getRoleNames = (row: User) => row.roles.map(r => r.roleName).join(' | ')
+const getRoleNames = (row: User) => row.roles.map((r) => r.roleName).join(' | ')
 
 // 查询用户数据
 const queryUsers = () => {
@@ -120,12 +119,15 @@ const queryUsers = () => {
 
 // 用户操作
 const changeUserState = (row: User) => {
-  userApi.updateUser(row.id, row).then(() => {
-    ElMessage.success('用户状态更新成功')
-  }).catch((e) => {
-    row.userState = !row.userState
-    ElMessage.error('用户状态更新失败')
-  })
+  userApi
+    .updateUser(row.id, row)
+    .then(() => {
+      ElMessage.success('用户状态更新成功')
+    })
+    .catch(() => {
+      row.userState = !row.userState
+      ElMessage.error('用户状态更新失败')
+    })
 }
 const distributeRole = (row: User) => {
   selectedUser.value = row
@@ -133,11 +135,11 @@ const distributeRole = (row: User) => {
 }
 const addUser = () => {
   selectedUser.value = undefined
-  userForm.value.show()
+  form.value.show()
 }
 const editUser = (row: User) => {
   selectedUser.value = row
-  userForm.value.show()
+  form.value.show()
 }
 const formSucceed = () => {
   getUsers()
@@ -169,13 +171,6 @@ const importUsersError = () => {
 }
 // 导出用户
 const exportQueryUsers = () => {
-  exportUsers(users.list)
+  exportData(users.list)
 }
 </script>
-
-<style scoped lang="scss">
-.excel-uploader {
-  display: inline-block;
-  margin: 0 20px;
-}
-</style>

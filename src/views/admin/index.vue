@@ -1,17 +1,17 @@
 <template>
-  <el-container>
-    <el-header>
-      <div class="header-left" @click="toggleCollapse">
-        <img src="@/assets/logo.png" alt />
+  <el-container class="w-screen h-screen overflow-hidden bg-gray-200">
+    <el-header class="flex justify-between bg-blue-400">
+      <div class="w-[200px] h-[60px]" @click="toggleCollapse">
+        <img class="h-full" src="@/assets/logo.png" alt />
       </div>
-      <div class="header-right">
-        <img src="../../assets/avatar.jpg" alt />
-        <p>只是个传说</p>
-        <el-button @click="logout">退出</el-button>
+      <div class="flex items-center">
+        <img class="w-10 h10 rounded-[20px]" src="../../assets/avatar.jpg" alt />
+        <p class="pl-1 pr-4 text-gray-200 text-sm">只是个传说</p>
+        <el-button type="danger" size="mini" @click="logout">退出</el-button>
       </div>
     </el-header>
-    <el-container>
-      <el-aside :width="isCollapsed ? '64px' : '200px'">
+    <el-container class="overflow-auto">
+      <el-aside class="bg-white" :width="isCollapsed ? '64px' : '200px'">
         <el-menu
           :router="true"
           :default-active="defaultActivePath"
@@ -39,7 +39,7 @@
         </el-menu>
       </el-aside>
       <el-main>
-        <el-breadcrumb separator="/">
+        <el-breadcrumb class="mb-4" separator="/">
           <el-breadcrumb-item>
             <a href="/admin" @click="resetActivePath">首页</a>
           </el-breadcrumb-item>
@@ -84,45 +84,3 @@ const resetActivePath = () => {
   sessionStorage.removeItem('active_path')
 }
 </script>
-
-<style scoped lang="scss">
-.el-container {
-  width: 100vw;
-  height: 100vh;
-  background: #ccc;
-  overflow: hidden;
-  .el-header {
-    display: flex;
-    justify-content: space-between;
-    background: #7c3aed;
-    .header-left {
-      width: 200px;
-      height: 60px;
-      img {
-        height: 100%;
-      }
-    }
-    .header-right {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      img {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        overflow: hidden;
-      }
-      p {
-        padding-left: 10px;
-        padding-right: 20px;
-      }
-    }
-  }
-  .el-aside {
-    background: #fff;
-  }
-}
-.el-breadcrumb {
-  padding-bottom: 20px;
-}
-</style>
