@@ -16,7 +16,7 @@
     </el-form-item>
   </el-form>
   <!--中间表格区域-->
-  <el-table :data="roles.list" :border="true" :stripe="true">
+  <el-table :data="roles.list" border stripe>
     <el-table-column type="index"></el-table-column>
     <el-table-column prop="roleName" label="角色名称"></el-table-column>
     <el-table-column prop="roleDesc" label="角色备注"></el-table-column>
@@ -85,7 +85,8 @@ const editRole = (row: Role) => {
   roleForm.value.show()
 }
 const deleteRole = (id: number) => {
-  roleApi.delRole(id).then(() => {
+  roleApi.deleteRole(id).then(() => {
+    ElMessage.success('角色删除成功')
     getRoles()
   })
 }

@@ -1,12 +1,12 @@
 import { onMounted, reactive, watch } from 'vue'
-import { GetRoleParams, Role } from '@/types/role'
+import { GetRolesParams, Role } from '@/types/role'
 import roleApi from '@/api/role'
 import { PaginationData } from '@/types/common'
 
 const useRoles = () => {
   const roles = reactive<PaginationData<Role>>({ list: [], total: 0 })
-  const query = reactive<GetRoleParams>({ page: 1, pageSize: 15 })
-  const getRoles = async (params: GetRoleParams = query) => {
+  const query = reactive<GetRolesParams>({ page: 1, pageSize: 15 })
+  const getRoles = async (params: GetRolesParams = query) => {
     roleApi.getRoles(params).then((result) => {
       const { list, total } = result.data
       roles.list = list

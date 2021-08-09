@@ -7,7 +7,7 @@ export interface Role {
   roleState: boolean
 }
 
-export interface GetRoleParams extends Partial<PaginationParams> {
+export interface GetRolesParams extends Partial<PaginationParams> {
   keyword?: string
 }
 

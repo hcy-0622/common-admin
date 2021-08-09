@@ -146,6 +146,7 @@ const formSucceed = () => {
 }
 const deleteUser = (id: string) => {
   userApi.deleteUser(id).then(() => {
+    ElMessage.success('用户删除成功')
     getUsers()
   })
 }

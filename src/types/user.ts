@@ -14,13 +14,13 @@ interface AuthData {
   type: RegisterType
 }
 
-export interface RegisterData extends AuthData {}
+export type RegisterData = AuthData
 
 export interface RegisterFormData extends RegisterData {
   checked: boolean
 }
 
-export interface LoginData extends AuthData {}
+export type LoginData = AuthData
 
 export interface User {
   id: number

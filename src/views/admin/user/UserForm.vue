@@ -91,6 +91,7 @@ const show = () => {
   visible.value = true
 }
 const close = () => {
+  form.value.resetField()
   visible.value = false
 }
 const submit = () => {
