@@ -7,7 +7,7 @@ const userApi = {
   login: (data: LoginData): PromiseApiResult => http.post('/v1/login', data),
   sendEmailCode: (email: string): PromiseApiResult => http.get('/v1/email_code', { params: { email } }),
 
-  getUsers: (params: GetUsersParams): PromiseApiResult<PaginationData<User>> => http.get('/v1/users', { params }),
+  getUsers: (params: GetUsersParams = {}): PromiseApiResult<PaginationData<User>> => http.get('/v1/users', { params }),
   createUser: (user: User): PromiseApiResult =>
     http.post(`/v1/users`, {
       ...user,

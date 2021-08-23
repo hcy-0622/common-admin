@@ -12,9 +12,11 @@ export interface Auth {
   rightsState: boolean
 }
 
-export interface GetAuthsParams extends Partial<PaginationParams> {
-  type?: string
-  rightsType?: string
-  level?: number
-  keyword?: string
-}
+export type GetAuthsParams = Partial<
+  PaginationParams & {
+    type: string
+    rightsType: string
+    level: number
+    keyword: string
+  }
+>

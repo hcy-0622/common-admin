@@ -17,6 +17,25 @@
   </el-form>
   <!--中间表格区域-->
   <el-table :data="roles.list" border stripe>
+    <el-table-column type="expand">
+      <template #default="{ row }">
+        <el-row v-for="item of row.rightsTree" :key="item.id">
+          <el-col :span="6">
+            <el-tag type="danger">{{ item.rightsName }}</el-tag>
+          </el-col>
+          <el-col :span="18">
+            <el-row v-for="item2 of item.children" :key="item2.id">
+              <el-col :span="6">
+                <el-tag type="warning">{{ item2.rightsName }}</el-tag>
+              </el-col>
+              <el-col :span="18">
+                <el-tag v-for="item3 of item2.children" :key="item3.id" type="success">{{ item3.rightsName }}</el-tag>
+              </el-col>
+            </el-row>
+          </el-col>
+        </el-row>
+      </template>
+    </el-table-column>
     <el-table-column type="index"></el-table-column>
     <el-table-column prop="roleName" label="角色名称"></el-table-column>
     <el-table-column prop="roleDesc" label="角色备注"></el-table-column>
@@ -34,7 +53,9 @@
       <template #default="{ row }">
         <el-button type="primary" icon="el-icon-edit" @click="editRole(row)"></el-button>
         <el-button type="danger" icon="el-icon-delete" @click="deleteRole(row.id)"></el-button>
-        <!-- <el-button type="warning" icon="el-icon-setting"></el-button> -->
+        <el-tooltip effect="dark" content="分配权限" placement="top" :enterable="false">
+          <el-button type="warning" icon="el-icon-setting" @click="distributeAuth(row)"></el-button>
+        </el-tooltip>
       </template>
     </el-table-column>
   </el-table>
@@ -48,6 +69,7 @@
   ></el-pagination>
 
   <role-form ref="roleForm" :role="selectedRole" @succeed="formSucceed"></role-form>
+  <distribute-auth-form ref="distributeForm" :role="selectedRole" @succeed="formSucceed"></distribute-auth-form>
 </template>
 
 <script setup lang="ts">
@@ -55,6 +77,7 @@ import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 
 import RoleForm from './RoleForm.vue'
+import DistributeAuthForm from './DistributeAuthForm.vue'
 import useRoles from './useRoles'
 import roleApi from '@/api/role'
 import type { Role } from '@/types/role'
@@ -62,6 +85,7 @@ import type { Role } from '@/types/role'
 const { roles, query, getRoles } = useRoles()
 const selectedRole = ref<Role>()
 const roleForm = ref()
+const distributeForm = ref()
 const queryRoles = () => {
   getRoles({ ...query, page: 1 })
 }
@@ -75,6 +99,10 @@ const changeRoleState = (row: Role) => {
       row.roleState = !row.roleState
       ElMessage.error('角色状态更新失败')
     })
+}
+const distributeAuth = (row: Role) => {
+  selectedRole.value = row
+  distributeForm.value && distributeForm.value.show()
 }
 const addRole = () => {
   selectedRole.value = undefined

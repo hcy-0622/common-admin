@@ -92,7 +92,6 @@ const show = () => {
   visible.value = true
 }
 const close = () => {
-  form.value.resetField()
   visible.value = false
 }
 defineExpose({ show, close })

@@ -1,3 +1,4 @@
+import { Auth } from './auth'
 import { PaginationParams } from './common'
 
 export interface Role {
@@ -5,11 +6,10 @@ export interface Role {
   roleName: string
   roleDesc: string
   roleState: boolean
+  rights: Auth[]
 }
 
-export interface GetRolesParams extends Partial<PaginationParams> {
-  keyword?: string
-}
+export type GetRolesParams = Partial<PaginationParams & { keyword: string }>
 
 export interface UserRole {
   userId: number

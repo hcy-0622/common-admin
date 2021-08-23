@@ -34,9 +34,11 @@ export interface User {
   roles: Role[]
 }
 
-export interface GetUsersParams extends PaginationParams {
-  role?: string
-  origin?: string
-  type?: string
-  keyword?: string
-}
+export type GetUsersParams = Partial<
+  PaginationParams & {
+    role: string
+    origin: string
+    type: string
+    keyword: string
+  }
+>
