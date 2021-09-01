@@ -1,6 +1,6 @@
 import { computed, Ref } from 'vue'
 import { EMAIL_REGEX, PASSWORD_REGEX, PHONE_REGEX, USERNAME_REGEX } from '@/constants/validate'
-import { User } from '@/types/user'
+import { User } from '@/api/user'
 
 const usernamePass = (_rule: any, value: string, callback: any): void => {
   const regex = USERNAME_REGEX

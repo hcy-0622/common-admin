@@ -18,9 +18,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted, reactive, watch } from 'vue'
-import type { Role } from '@/types/role'
 import { ElMessage } from 'element-plus'
 import authApi from '@/api/auth'
+import type { Role } from '@/api/role'
 
 interface Props {
   role?: Role
@@ -54,7 +54,7 @@ watch(
   () => props.role,
   (role) => {
     if (role) {
-      const ids = role.rights.map((r) => r.id)
+      const ids = role.rights.filter((r) => r.level === 2).map((r) => r.id)
       treeProps.defaultCheckedKeys = ids
       tree.value && tree.value.setCheckedKeys(ids)
     }

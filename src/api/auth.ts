@@ -1,5 +1,26 @@
 import http from './http'
-import { Auth, GetAuthsParams } from '@/types/auth'
+import { PaginationParams } from '@/types'
+
+export interface Auth {
+  id: number
+  rightsName: string
+  rightsDesc: string
+  rightsType: string
+  rightsMethod: string
+  level: number
+  pid: number
+  rightsPath: string
+  rightsState: boolean
+}
+
+export type GetAuthsParams = Partial<
+  PaginationParams & {
+    type: string
+    rightsType: string
+    level: number
+    keyword: string
+  }
+>
 
 const authApi = {
   getAuths: (params: GetAuthsParams = {}) => http.get('/v1/rights', { params }),

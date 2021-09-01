@@ -59,7 +59,7 @@ import Icon from '@/components/Icon.vue'
 import { EMAIL_REGEX, PHONE_REGEX } from '@/constants/validate'
 import useFormRules from './useFormRules'
 import userApi from '@/api/user'
-import type { LoginData } from '@/types/user'
+import type { LoginData } from '@/api/user'
 
 const router = useRouter()
 const form = ref()
@@ -102,7 +102,8 @@ const login = () => {
   form.value.validate((flag: boolean) => {
     if (!flag) return
     handleFormData()
-    userApi.login(formData).then(() => {
+    userApi.login(formData).then((result) => {
+      sessionStorage.setItem('user_info', JSON.stringify(result.data))
       // sessionStorage.setItem('token', result.data.token)
       router.push('/admin')
     })

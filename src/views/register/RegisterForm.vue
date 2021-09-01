@@ -55,12 +55,15 @@ import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 
-import type { RegisterType, RegisterFormData } from '@/types/user'
+import type { RegisterType, RegisterData } from '@/api/user'
 import userApi from '@/api/user'
 import useFormRules from './useFormRules'
 
 interface Props {
   type: RegisterType
+}
+interface RegisterFormData extends RegisterData {
+  checked: boolean
 }
 
 const props = defineProps<Props>()

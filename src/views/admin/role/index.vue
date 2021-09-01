@@ -76,11 +76,11 @@
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 
+import type { Role } from '@/api/role'
+import roleApi from '@/api/role'
 import RoleForm from './RoleForm.vue'
 import DistributeAuthForm from './DistributeAuthForm.vue'
 import useRoles from './useRoles'
-import roleApi from '@/api/role'
-import type { Role } from '@/types/role'
 
 const { roles, query, getRoles } = useRoles()
 const selectedRole = ref<Role>()

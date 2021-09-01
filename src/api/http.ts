@@ -6,10 +6,42 @@ const http = axios.create({
   timeout: 15000,
   withCredentials: true,
 })
+const source = axios.CancelToken.source()
 
+const getActionRights = () => {
+  const data = sessionStorage.getItem('user_info')
+  if (!data) return null
+  const userInfo = JSON.parse(data)
+  const actionRights = userInfo.rightTree.find((r: any) => r.rightsType === 'action')
+  return actionRights
+}
+const actionRights = getActionRights()
+const isRequest = (rights: any, path: string, method: string) => {
+  const regex = new RegExp(`^${rights.rightsPath}(/[0-9]*)?$`, 'i')
+  if (regex.test(path) && rights.rightsMethod === method) return true
+  if (rights.children) {
+    for (let i = 0; i < rights.children.length; i++) {
+      const item = rights.children[i]
+      if (isRequest(item, path, method)) return true
+    }
+  }
+  return false
+}
 // 添加请求拦截器
 http.interceptors.request.use(
   (config) => {
+    const curPath = config.url || ''
+    const curMethod = config.method || ''
+    if (
+      !(curPath.startsWith('/v1/register') || curPath.startsWith('/v1/login') || curPath.startsWith('/v1/email_code'))
+    ) {
+      const flag = isRequest(actionRights, curPath, curMethod)
+      console.log(config.url, flag)
+      if (!flag) {
+        config.cancelToken = source.token
+        source.cancel('没有对应的请求权限')
+      }
+    }
     // 在发送请求之前做些什么
     // config.headers.Authorization = sessionStorage.getItem('token')
     return config

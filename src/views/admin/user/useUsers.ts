@@ -1,6 +1,6 @@
 import { onMounted, reactive, watch } from 'vue'
-import { PaginationData } from '@/types/common'
-import { GetUsersParams, User } from '@/types/user'
+import { PaginationData } from '@/types'
+import { GetUsersParams, User } from '@/api/user'
 import userApi from '@/api/user'
 
 const useUsers = () => {

@@ -63,7 +63,28 @@ router.beforeEach((to, from, next) => {
   if (!token) {
     return next('/login')
   }
-  next()
+  const routerRights = getRouterRights()
+  const flag = isNext(routerRights, to.path)
+  if (flag) next()
+  else next(false)
 })
+
+const isNext = (rights: any, path: string) => {
+  if (rights.rightsPath === path) return true
+  if (rights.children) {
+    for (let i = 0; i < rights.children.length; i++) {
+      const item = rights.children[i]
+      if (isNext(item, path)) return true
+    }
+  }
+  return false
+}
+const getRouterRights = () => {
+  const data = sessionStorage.getItem('user_info')
+  if (!data) return null
+  const userInfo = JSON.parse(data)
+  const routerRights = userInfo.rightTree.find((r: any) => r.rightsType === 'router')
+  return routerRights
+}
 
 export default router

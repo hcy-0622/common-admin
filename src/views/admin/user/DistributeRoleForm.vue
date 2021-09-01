@@ -23,10 +23,10 @@
 
 <script setup lang="ts">
 import { ref, watch, toRef, computed, onMounted } from 'vue'
-import type { User } from '@/types/user'
-import type { Role } from '@/types/role'
-import roleApi from '@/api/role'
 import { ElMessage } from 'element-plus'
+import type { Role } from '@/api/role'
+import type { User } from '@/api/user'
+import roleApi from '@/api/role'
 
 interface Props {
   user?: User

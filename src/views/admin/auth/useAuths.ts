@@ -1,7 +1,7 @@
 import { onMounted, reactive, watch } from 'vue'
 import authApi from '@/api/auth'
-import { GetAuthsParams, Auth } from '@/types/auth'
-import { PaginationData } from '@/types/common'
+import { GetAuthsParams, Auth } from '@/api/auth'
+import { PaginationData } from '@/types'
 
 const useAuths = () => {
   const auths = reactive<PaginationData<Auth>>({ list: [], total: 0 })

@@ -1,11 +1,6 @@
 import { reactive } from 'vue'
-import type { RegisterType } from '@/types/user'
-import {
-  CAPTCHA_REGEX,
-  EMAIL_REGEX,
-  PASSWORD_REGEX,
-  USERNAME_REGEX,
-} from '@/constants/validate'
+import { RegisterType } from '@/api/user'
+import { CAPTCHA_REGEX, EMAIL_REGEX, PASSWORD_REGEX, USERNAME_REGEX } from '@/constants/validate'
 
 const usernamePass = (_rule: any, value: string, callback: any): void => {
   if (!value) {

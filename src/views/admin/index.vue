@@ -5,8 +5,8 @@
         <img class="h-full" src="@/assets/logo.png" alt />
       </div>
       <div class="flex items-center">
-        <img class="w-10 h10 rounded-[20px]" src="../../assets/avatar.jpg" alt />
-        <p class="pl-1 pr-4 text-gray-200 text-sm">只是个传说</p>
+        <img class="w-10 h10 rounded-[20px]" :src="userInfo.avatarURL || undefined" alt />
+        <p class="pl-1 pr-4 text-gray-200 text-sm">{{ userInfo.username || userInfo.email || userInfo.phone }}</p>
         <el-button type="danger" size="mini" @click="logout">退出</el-button>
       </div>
     </el-header>
@@ -21,19 +21,19 @@
           text-color="#666"
           active-text-color="deepskyblue"
         >
-          <el-submenu v-for="menu of menus" :key="menu.label" :index="menu.label">
+          <el-submenu v-for="menu of menus" :key="menu.id" :index="menu.rightsPath">
             <template #title>
-              <i :class="menu.icon"></i>
-              <span>{{ menu.label }}</span>
+              <i class="el-icon-setting"></i>
+              <span>{{ menu.rightsName }}</span>
             </template>
             <el-menu-item
               v-for="subMenu of menu.children"
-              :key="subMenu.label"
-              :index="subMenu.path"
-              @click="menuItemClick(subMenu.path)"
+              :key="subMenu.id"
+              :index="subMenu.rightsPath"
+              @click="menuItemClick(subMenu.rightsPath)"
             >
-              <i :class="subMenu.icon"></i>
-              <span>{{ subMenu.label }}</span>
+              <i class="el-icon-setting"></i>
+              <span>{{ subMenu.rightsName }}</span>
             </el-menu-item>
           </el-submenu>
         </el-menu>
@@ -53,15 +53,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Cookies from 'js-cookie'
-import useMenus from './useMenus'
+
+import type { User } from '@/api/user'
 
 const router = useRouter()
 const defaultActivePath = ref('')
 const isCollapsed = ref(false)
-const menus = useMenus()
+const menus = computed(() => userInfo.rightTree?.find((r) => r.rightsType === 'menu').children)
+let userInfo: Partial<User> = {}
+const info = sessionStorage.getItem('user_info')
+if (info) userInfo = JSON.parse(info)
 
 const path = sessionStorage.getItem('active_path') || ''
 defaultActivePath.value = path
@@ -77,6 +81,8 @@ const menuItemClick = (path: string) => {
 
 const logout = () => {
   Cookies.remove('token')
+  sessionStorage.removeItem('active_path')
+  sessionStorage.removeItem('user_info')
   router.push('/login')
 }
 

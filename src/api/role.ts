@@ -1,5 +1,20 @@
 import http from './http'
-import { GetRolesParams, Role, UserRole } from '@/types/role'
+import { PaginationParams } from '@/types'
+import { Auth } from '@/api/auth'
+
+export interface Role {
+  id: number
+  roleName: string
+  roleDesc: string
+  roleState: boolean
+  rights: Auth[]
+}
+export type GetRolesParams = Partial<PaginationParams & { keyword: string }>
+
+export interface UserRole {
+  userId: number
+  roleId: number
+}
 
 const roleApi = {
   getRoles: (params: GetRolesParams = {}) => http.get('/v1/roles', { params }),

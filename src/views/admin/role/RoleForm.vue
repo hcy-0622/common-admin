@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { computed, ref, toRefs, watch } from 'vue'
 import roleApi from '@/api/role'
-import type { Role } from '@/types/role'
+import type { Role } from '@/api/role'
 
 interface Props {
   role: Role

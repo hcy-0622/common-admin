@@ -95,12 +95,12 @@
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 
+import type { User } from '@/api/user'
+import userApi from '@/api/user'
+import { exportData } from '@/utils/excel'
 import UserForm from './UserForm.vue'
 import DistributeRoleForm from './DistributeRoleForm.vue'
 import useUsers from './useUsers'
-import userApi from '@/api/user'
-import { exportData } from '@/utils/excel'
-import type { User } from '@/types/user'
 
 const { users, query, getUsers } = useUsers()
 const selectedUser = ref<User>()

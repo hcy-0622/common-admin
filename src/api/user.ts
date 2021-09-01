@@ -1,10 +1,48 @@
 import http from './http'
-import { PaginationData, PromiseApiResult } from '@/types/common'
-import { GetUsersParams, LoginData, RegisterData, User } from '@/types/user'
+import { PaginationData, PromiseApiResult } from '@/types'
+import { PaginationParams } from '@/types'
+import { Role } from './role'
+
+type AuthType = 'username' | 'email' | 'phone'
+export type RegisterType = AuthType
+export type LoginType = AuthType
+
+interface AuthData {
+  username?: string
+  email?: string
+  phone?: string
+  password: string
+  captcha: string
+  type: RegisterType
+}
+export type RegisterData = AuthData
+export type LoginData = AuthData
+
+export interface User {
+  id: number
+  username: string | null
+  email: string | null
+  phone: string | null
+  avatarURL: string | null
+  local: boolean
+  github: boolean
+  userState: boolean
+  roles: Role[]
+  rightTree: any[]
+}
+
+export type GetUsersParams = Partial<
+  PaginationParams & {
+    role: string
+    origin: string
+    type: string
+    keyword: string
+  }
+>
 
 const userApi = {
   register: (data: RegisterData): PromiseApiResult => http.post('/v1/register', data),
-  login: (data: LoginData): PromiseApiResult => http.post('/v1/login', data),
+  login: (data: LoginData): PromiseApiResult<User> => http.post('/v1/login', data),
   sendEmailCode: (email: string): PromiseApiResult => http.get('/v1/email_code', { params: { email } }),
 
   getUsers: (params: GetUsersParams = {}): PromiseApiResult<PaginationData<User>> => http.get('/v1/users', { params }),

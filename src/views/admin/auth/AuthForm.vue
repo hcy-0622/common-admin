@@ -48,9 +48,10 @@
 
 <script setup lang="ts">
 import { computed, ref, toRefs, reactive, watch } from 'vue'
+import { ElMessage } from 'element-plus'
+
+import type { Auth } from '@/api/auth'
 import authApi from '@/api/auth'
-import type { Auth } from '@/types/auth'
-// import useForm from './useForm'
 
 interface Props {
   auth: Auth
@@ -136,20 +137,20 @@ const show = () => {
   visible.value = true
 }
 const close = () => {
-  form.value.resetField()
+  if (form.value && form.value.resetField) form.value.resetField()
   visible.value = false
 }
 const submit = () => {
   if (!form.value) return
   form.value.validate(async (flag: boolean) => {
-    if (!flag) {
-      return
-    }
+    if (!flag) return
     try {
       if (props.auth) {
         await authApi.updateAuth(props.auth.id, formData.value as Auth)
+        ElMessage.success('权限编辑成功')
       } else {
         await authApi.createAuth(formData.value as Auth)
+        ElMessage.success('权限添加成功')
       }
       close()
       emit('succeed')

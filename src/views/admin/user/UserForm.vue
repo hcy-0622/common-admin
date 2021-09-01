@@ -42,9 +42,10 @@
 <script setup lang="ts">
 import { computed, ref, toRef, watchEffect } from 'vue'
 import { ElMessage } from 'element-plus'
+
+import type { User } from '@/api/user'
 import userApi from '@/api/user'
 import useFormRules from './useFormRules'
-import type { User } from '@/types/user'
 
 interface Props {
   user?: User

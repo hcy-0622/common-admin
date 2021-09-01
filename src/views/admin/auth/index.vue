@@ -60,10 +60,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
+
+import type { Auth } from '@/api/auth'
 import authApi from '@/api/auth'
 import useAuths from './useAuths'
 import AuthForm from './AuthForm.vue'
-import type { Auth } from '@/types/auth'
 
 const { auths, query, getAuths } = useAuths()
 const selectedAuth = ref<Auth>()
